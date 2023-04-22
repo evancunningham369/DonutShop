@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import bcrypt from 'bcrypt';
 import express from 'express';
 const app = express();
 import cors from 'cors';
@@ -11,7 +12,7 @@ import * as db from './donutDB.js';
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(`mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.aethefr.mongodb.net/users`)
+mongoose.connect(`mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.aethefr.mongodb.net/donutShopDB`)
 .then(() => console.log("Successfully connected to Database"))
 .catch((err) => console.log("Error:", err));
 
@@ -33,10 +34,13 @@ app.post('/cart', async(req, res) => {
     res.send(user.cart);
 })
 
-app.post('/register', async (req, res) => {
+app.post('/register', (req, res) => {
     const { username, password } = req.body;
-    const response = await db.addUser(username, password);
-    res.send(response);
+    const saltRounds = 5;
+    bcrypt.hash(password, saltRounds, async function(err, hash) {
+        const response = await db.addUser(username, hash);
+        res.send(response);
+    })
 })
 
 app.post('/login', async (req, res) => {

@@ -1,5 +1,6 @@
 import User from "./models/Users.js";
 import Order from "./models/Order.js";
+import bcrypt from 'bcrypt';
 
 export async function emptyUserCart(user){
     await User.findOneAndUpdate({username: user}, {cart: []});
@@ -54,22 +55,22 @@ export async function addUser(username, password){
 }
 
 export async function loginUser(username, password){
-    let userFound = false;
     let response = {};
 
-    let user = await User.find({username});
-    userFound = user.length !== 0;
+    let user = await User.findOne({username});
     
-    if(userFound){
-        if (user[0].password === password){
+    if(user){
+        const match = await bcrypt.compare(password, user.password);
+
+        if(match){
             response = {
-                user: user[0],
-                success: true,
+                user: user,
+                success: match,
                 message: "User logged in",}
         }
         else {
             response = {
-                success: false,
+                success: match,
                 message: "Incorrect password",
             }
         }
