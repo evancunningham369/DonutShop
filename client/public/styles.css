@@ -1,16 +1,22 @@
 html,
-body {
+body,
+#root,
+main {
   height: 100%;
   margin: 0;
   padding: 0;
+  position: relative;
 }
 
-body.form-signin {
+.form-container{
   display: flex;
   justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: azure;
+  align-items: center;
+  height: 85%;
+}
+
+.form-signin {
+  min-width: 330px;
 }
 
 header {
@@ -29,19 +35,14 @@ header h1 {
 
 footer {
   position: absolute;
+  display: block;
   bottom: 0;
-  width: auto;
-  height: 2.5rem;
+  width: 100%;
 }
 
 footer p {
+  text-align: center;
   color: #ccc;
-}
-
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  margin: auto;
 }
 
 .form-signin .form-floating:focus-within {
