@@ -2,6 +2,8 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import bcrypt from 'bcrypt';
 import express from 'express';
+import https from 'https';
+import fs from 'fs';
 const app = express();
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -69,6 +71,7 @@ app.post('/empty-cart', (req, res) => {
 
     res.send(`User ${username}'s cart is empty`);
 })
+
 
 app.listen("3001", () =>{
     console.log("Server running on port 3001");
