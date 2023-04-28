@@ -87,14 +87,15 @@ export async function loginUser(username, password){
 export async function addToCart(body){
     const { username, donut } = body;
     let response = {};
+    if(donut.quantity > 1){
+        await User.findOneAndUpdate({username: username, 'cart.name': donut.name}, {$set: {'cart.$.quantity': donut.quantity, 'cart.$.total': donut.total}});
+    } else{
+        await User.findOneAndUpdate({username: username}, {$push : {cart: donut}});
+    }
 
-    let user = await User.findOneAndUpdate({username: username}, { $push: { cart: donut } });
-
-    if(!user.isNew){
-        response = {
-            success: true,
-            message: `${donut.name} donut added to cart`,
-        }
+    response = {
+        success: true,
+        message: `${donut.name} donut added to cart`,
     }
     return response;
 }

@@ -16,7 +16,7 @@ export default function Checkout(){
             const response = fetchPost({ username: username }, 'cart');
             const cart = await response;
             setCart([...cart]);
-            cart.map((donut) => total += donut.price);
+            cart.map((donut) => total += donut.total);
             setTotalPrice(total);
         }
         
@@ -36,7 +36,7 @@ export default function Checkout(){
         const serverResponse = await addToOrders(finalOrder);
         setOrder(true);
         setResponse(serverResponse.message);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         navigate('../Home');
     }
 
@@ -47,7 +47,7 @@ export default function Checkout(){
                 <h1>Cart</h1>
                 <ul>
                     {cart.map((donut, index) => (
-                        <li key={index}>{donut.name}</li>
+                        <li key={index}>{donut.name} <strong>x {donut.quantity}</strong></li>
                     ))}
                 </ul>
                 <h2>Total Amount: ${totalPrice}.00</h2>

@@ -38,7 +38,7 @@ function Register(){
             <div className='form-container'>
                 <form className='text-center form-signin' onSubmit={handleSubmit}>
                     <h1 className='text-center h3 mb-3 fw-normal'>Register</h1>
-                    <h2>{response}</h2>
+                    <h2 id='response'>{response}</h2>
                     <div className='form-floating'>
                         <input className='form-control' defaultValue="user1" type='username' name="username" id='floatingUsername' placeholder="username"/>
                         <label htmlFor='floatingUsername'>Username </label>
