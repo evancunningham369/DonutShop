@@ -1,6 +1,6 @@
 import Header from "./Header";
 import Footer from './Footer';
-import {  useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addToUserCart, logOut } from "../fetch_req";
 import { Card } from "./Card";
@@ -44,15 +44,15 @@ function Home(){
 
     async function handleLogOut(){
         const response = await logOut(user.username);
+        sessionStorage.clear();
         if(response.ok){
             navigate('../');
         }
     }
 
     async function addDonutToCart(donut){
-        if(donut.quantity > 0){
-            await addToUserCart(user.username, donut);
-        }
+        sessionStorage.setItem(donut.name, JSON.stringify(donut.quantity));
+        await addToUserCart(user.username, donut);
     }
 
     return(
@@ -63,8 +63,9 @@ function Home(){
                     <h2>Logged in as {user.username}</h2>
                 <div className="card-group mt-2">
                     {donuts.map((donut, index) => {
+                        const quantity = sessionStorage.getItem(donut.name);
                         return (
-                            <Card addToCart={(donut) => addDonutToCart(donut)} key={index} name={donut.name} price={donut.price} desc={donut.desc} image={donut.image}/>
+                            <Card addToCart={(donut) => addDonutToCart(donut)} key={index} name={donut.name} quantity={quantity} price={donut.price} desc={donut.desc} image={donut.image}/>
                         )
                     })}
                 </div>

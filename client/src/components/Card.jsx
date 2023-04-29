@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { addToUserCart } from "../fetch_req";
 
 export function Card(props){
-    const username = JSON.parse(sessionStorage.getItem('user')).username;
+    var donutQuantity = parseInt(props.quantity);
+    donutQuantity = isNaN(donutQuantity) ? 0: donutQuantity
+    const first = useRef(true);
+
     const [response, setResponse] = useState("");
-    const [quantity, setQuantity] = useState(0);
+    const [quantity, setQuantity] = useState(donutQuantity);
 
     useEffect(() => {
+        if(first.current){
+            first.current = false;
+            return;
+        }
         props.addToCart({
             name: props.name,
             price: props.price,

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addToOrders, fetchPost } from '../fetch_req';
+import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Checkout(){
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -14,10 +16,10 @@ export default function Checkout(){
         let total = 0;
         async function getUserCart(username){
             const response = fetchPost({ username: username }, 'cart');
-            const cart = await response;
-            setCart([...cart]);
-            cart.map((donut) => total += donut.total);
+            const userCart = await response;
+            userCart.map((donut) => total += donut.total);
             setTotalPrice(total);
+            setCart(userCart);
         }
         
         getUserCart(user.username);
@@ -36,23 +38,26 @@ export default function Checkout(){
         const serverResponse = await addToOrders(finalOrder);
         setOrder(true);
         setResponse(serverResponse.message);
+        cart.map((donut) => sessionStorage.removeItem(donut.name));
         await new Promise(resolve => setTimeout(resolve, 500));
         navigate('../Home');
     }
 
     return(
         <div>
+            <Header />
             {orderSubmit ? (<h1>{response}</h1>) : (
             <div>
                 <h1>Cart</h1>
                 <ul>
-                    {cart.map((donut, index) => (
-                        <li key={index}>{donut.name} <strong>x {donut.quantity}</strong></li>
-                    ))}
+                    {cart.map((donut, index) => 
+                    (<li key={index}>{donut.name} <strong>x {donut.quantity}</strong></li>)
+                    )}
                 </ul>
                 <h2>Total Amount: ${totalPrice}.00</h2>
                 <button onClick={addOrder} className="btn btn-primary">Checkout</button>
             </div>)}
+            <Footer />
         </div>
     )
 }
