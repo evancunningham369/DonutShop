@@ -87,8 +87,18 @@ export async function loginUser(username, password){
 export async function addToCart(body){
     const { username, donut } = body;
     let response = {};
-    if(donut.quantity > 1){
+    let hasDonut = await User.countDocuments({username: username, 'cart.name': donut.name});
+    
+    if(hasDonut > 0){
         await User.findOneAndUpdate({username: username, 'cart.name': donut.name}, {$set: {'cart.$.quantity': donut.quantity, 'cart.$.total': donut.total}});
+        
+        if(donut.quantity === 0){
+            await User.updateOne({username}, {
+                $pull: {
+                    cart: {name: donut.name}
+                },
+            });
+        }
     } else{
         await User.findOneAndUpdate({username: username}, {$push : {cart: donut}});
     }
