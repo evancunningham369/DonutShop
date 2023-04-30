@@ -8,6 +8,7 @@ export default function Checkout(){
     const user = JSON.parse(sessionStorage.getItem('user'));
     const [orderSubmit, setOrder] = useState(false);
     const [cart, setCart] = useState([]);
+    const [emptyCart, setEmptyCart] = useState(false);
     const [response, setResponse] = useState("");
     const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Checkout(){
         async function getUserCart(username){
             const response = fetchPost({ username: username }, 'cart');
             const userCart = await response;
+            setEmptyCart(userCart.length === 0);
             userCart.map((donut) => total += donut.total);
             setTotalPrice(total);
             setCart(userCart);
@@ -43,6 +45,10 @@ export default function Checkout(){
         navigate('../Home');
     }
 
+    function goBack(){
+        navigate('../Home');
+    }
+
     return(
         <div>
             <Header />
@@ -55,7 +61,16 @@ export default function Checkout(){
                     )}
                 </ul>
                 <h2>Total Amount: ${totalPrice}.00</h2>
-                <button onClick={addOrder} className="btn btn-primary">Checkout</button>
+                {emptyCart ? (
+                <div>
+                    <h2>Cart is empty. Go back to add donuts to your cart</h2>
+                    <button className="btn btn-primary" disabled>Checkout</button>
+                    <button onClick={goBack}className="btn btn-primary">Go back</button>
+                </div>):
+                 (<div>
+                    <button onClick={addOrder} className="btn btn-primary">Checkout</button>
+                    <button onClick={goBack}className="btn btn-primary">Go back</button>
+                 </div>)}
             </div>)}
             <Footer />
         </div>

@@ -58,7 +58,7 @@ function Home(){
     return(
         <div>
             <Header />
-            {checkedOut ? (<h1>Checking out...</h1>): 
+            {checkedOut ? (<h1>Loading cart...</h1>): 
             (<div>
                     <h2>Logged in as {user.username}</h2>
                 <div className="card-group mt-2">
@@ -70,7 +70,7 @@ function Home(){
                     })}
                 </div>
                 <div>
-                    <button onClick={checkOut} className="btn btn-primary">Add To Cart</button>
+                    <button onClick={checkOut} className="btn btn-primary">Go To Cart</button>
                     <button onClick={handleLogOut} className="btn btn-primary">Log-Out</button>
                 </div>
             </div>)}
