@@ -15,19 +15,19 @@ function Home(){
             name: "Glazed",
             image: 'https://images.unsplash.com/photo-1564545508148-9f5ce263df8e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8Z2xhemVkJTIwZG9udXR8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60',
             desc: 'A donut covered in sweet glaze',
-            price:1,
+            price:1.00,
         },
         {
             name: "Cake",
             image: 'https://cdn.pixabay.com/photo/2017/04/04/16/35/cake-2201820_1280.jpg',
             desc: 'A whole cake you can fit in the palm of your hand!',
-            price:2,
+            price:2.00,
         },
         {
             name: "Plain",
             image: 'https://static4.depositphotos.com/1006913/269/i/600/depositphotos_2696137-stock-photo-donut.jpg',
             desc: 'Simply a traditional plain donut. I won\'t judge....much',
-            price:.50,
+            price:0.50,
         },
         {
             name: "Chocolate Sprinkle",
@@ -59,7 +59,7 @@ function Home(){
         <div>
             <Header />
             {checkedOut ? (<h1>Loading cart...</h1>): 
-            (<div>
+            (<div className="d-flex flex-column">
                     <h2>Logged in as {user.username}</h2>
                 <div className="card-group mt-2">
                     {donuts.map((donut, index) => {

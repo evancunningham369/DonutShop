@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addToOrders, fetchPost } from '../fetch_req';
 import Header from "./Header";
@@ -20,7 +20,7 @@ export default function Checkout(){
             const userCart = await response;
             setEmptyCart(userCart.length === 0);
             userCart.map((donut) => total += donut.total);
-            setTotalPrice(total);
+            setTotalPrice(total.toFixed(2));
             setCart(userCart);
         }
         
@@ -53,14 +53,16 @@ export default function Checkout(){
         <div>
             <Header />
             {orderSubmit ? (<h1>{response}</h1>) : (
-            <div>
+            <div className="d-flex flex-column align-items-center">
                 <h1>Cart</h1>
-                <ul>
+                <ul className="list-group list-group-flush">
                     {cart.map((donut, index) => 
-                    (<li key={index}>{donut.name} <strong>x {donut.quantity}</strong></li>)
+                    (<li className="list-group-item d-flex justify-content-between align-items-center" key={index}>{donut.name}
+                    <span className="badge bg-primary rounded-pill">{donut.quantity}</span>
+                    </li>)
                     )}
                 </ul>
-                <h2>Total Amount: ${totalPrice}.00</h2>
+                <h2>Total Amount: ${totalPrice}</h2>
                 {emptyCart ? (
                 <div>
                     <h2>Cart is empty. Go back to add donuts to your cart</h2>

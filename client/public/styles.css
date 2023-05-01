@@ -31,6 +31,10 @@ main {
   border-radius: 15px;
 }
 
+ul{
+  width: 30%;
+  padding: 2em;
+}
 header {
   background-color: darkcyan;
   text-align: center;
@@ -71,4 +75,9 @@ footer p {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.list-group{
+  --bs-list-group-item-padding-x: 1rem;
+  --bs-list-group-item-padding-y: 1.5rem;
 }
