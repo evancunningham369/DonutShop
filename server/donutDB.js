@@ -27,7 +27,7 @@ export function addOrder(body){
 export async function addUser(username, password){
     let response = {};
 
-    const cart = [{}];
+    const cart = [];
     const newUser = new User({
         username: username,
         password: password,

@@ -2,8 +2,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import bcrypt from 'bcrypt';
 import express from 'express';
-import https from 'https';
-import fs from 'fs';
 const app = express();
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -32,7 +30,6 @@ app.post('/cart', async(req, res) => {
     const { username } = req.body;
 
     let user = await User.findOne({username}, 'cart');
-
     res.send(user.cart);
 })
 
