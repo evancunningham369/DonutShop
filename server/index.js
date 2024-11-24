@@ -4,71 +4,111 @@ import bcrypt from 'bcrypt';
 import express from 'express';
 const app = express();
 import cors from 'cors';
-import mongoose from 'mongoose';
-import User from './models/Users.js';
-import Order from './models/Order.js';
-import * as db from './donutDB.js';
+import { pool } from './config/database.js';
 
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(`mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.aethefr.mongodb.net/donutShopDB`)
-.then(() => console.log("Successfully connected to Database"))
-.catch((err) => console.log("Error:", err));
-
-app.get('/', (req, res) => {
-    User.find({}).then((users) => {
-        res.send(users);
-    });
-});
-
-app.get('/orders', (req, res) => {
-    Order.find({}).then((orders) => res.send(orders));
-})
-
-app.post('/cart', async(req, res) => {
-    const { username } = req.body;
-
-    let user = await User.findOne({username}, 'cart');
-    res.send(user.cart);
-})
-
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const { username, password } = req.body;
     const saltRounds = 5;
     bcrypt.hash(password, saltRounds, async function(err, hash) {
-        const response = await db.addUser(username, hash);
-        res.send(response);
+        try{
+            const response = await pool.query(`SELECT insert_user($1, $2);`, [username, hash]);
+            
+            res.status(200).json({success: true, userId: response.rows[0].insert_user ,username: username});
+        }
+        catch(error){
+            
+            res.status(500).json({success: false, error: error.message});
+        }
     })
-})
+});
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const response = await db.loginUser(username, password);
-    res.send(response);
-})
+    try {
+        const result = await pool.query('SELECT user_id, hashed_password FROM account WHERE username= $1', [username]);
+        
+        if(result.rowCount == 0){
+            res.status(500).json({message: "Username does not exist!"});
+        }
+        const hashPass = result.rows[0].hashed_password;
+        
+        const match = await bcrypt.compare(password, hashPass);
+        if(!match){
+            res.status(500).json({message: "Incorrect password!"});
+        }
+        else{
+            
+            res.status(200).json({userId: result.rows[0].user_id, username: username});
+        }
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+});
 
-app.post('/add-order', async (req, res) => {
-    const { user } = req.body;
-    const response = await db.addOrder(req.body);
-    db.emptyUserCart(user);
-    
-    res.send(response);
+app.post('/logout', async(req, res) => {
+    res.status(200).send();
+});
+
+app.get('/donuts/:userId', async(req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        const response = await pool.query(`SELECT * FROM get_donut_data($1)`, [userId]);
+        
+        res.status(200).send(response.rows);
+    } catch (error) {
+        
+        console.error(error.message);
+    }
+});
+
+app.get('/cart/:userId', async(req, res) => {
+    try {
+        const {userId} = req.params;
+        const response = await pool.query(`SELECT * FROM get_cart($1)`, [userId]);
+        
+        res.status(200).json(response.rows);
+    } catch (error) {
+        console.error(error.message);        
+    }
+});
+
+app.get('/cart/total/:userId', async(req, res) => {
+    try {
+        const {userId} = req.params;
+        const response = await pool.query(`SELECT * FROM get_cart_total($1)`, [userId]);
+
+        res.status(200).json(response.rows[0]);
+    } catch (error) {
+        console.error(error.message);
+    }
 });
 
 app.post('/add-to-cart', async (req, res) => {
-    const response = await db.addToCart(req.body);
-    res.send(response);
+    const { userId, donutId, quantity } = req.body;
+    
+    try {
+        await pool.query(`CALL add_to_cart($1, $2, $3)`,
+            [userId, donutId, quantity]
+        );
+        res.status(200).json({"Success": true});
+    } catch (error) {
+        res.status(500).json({"Error": error.message});
+    }
 });
 
-app.post('/empty-cart', (req, res) => {
-    const { username } = req.body;
-
-    db.emptyUserCart(username);
-
-    res.send(`User ${username}'s cart is empty`);
+app.post('/add-to-order/:userId', async(req, res) => {
+    try {
+        const { userId } = req.params;
+        await pool.query(`CALL add_to_order($1)`, [userId]);
+        res.status(200).json({"Success": true});
+    } catch (error) {
+        console.error("Error:", error.message);   
+    }
 })
-
 
 app.listen("3001", () =>{
     console.log("Server running on port 3001");
