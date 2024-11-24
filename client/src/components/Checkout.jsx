@@ -1,79 +1,79 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addToOrders, fetchPost } from '../fetch_req';
+import { getCart, getCartTotal, addToOrder } from '../fetch_req';
 import Header from "./Header";
 import Footer from "./Footer";
 
 export default function Checkout(){
-    const user = JSON.parse(sessionStorage.getItem('user'));
-    const [orderSubmit, setOrder] = useState(false);
     const [cart, setCart] = useState([]);
-    const [emptyCart, setEmptyCart] = useState(false);
-    const [response, setResponse] = useState("");
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [total, setTotal] = useState(0);
+    const userId = JSON.parse(sessionStorage.getItem('userId'));
     const navigate = useNavigate();
-
+    
     useEffect(() => {
-        let total = 0;
-        async function getUserCart(username){
-            const response = fetchPost({ username: username }, 'cart');
-            const userCart = await response;
-            setEmptyCart(userCart.length === 0);
-            userCart.map((donut) => total += donut.total);
-            setTotalPrice(total.toFixed(2));
-            setCart(userCart);
+        const fetchCart = async() => {
+            try {
+                const response = await getCart(userId);
+                                
+                setCart(await response.json());
+            } catch (error) {
+                console.error("Error:", error);
+            }
         }
+        const fetchTotal = async() => {
+            try {
+                const response = await getCartTotal(userId);
+                const data = await response.json();
+                
+                setTotal(data.get_cart_total);
+            } catch (error) {
+                console.error('Error:',error);
+            }
+        }
+
+        fetchCart();
+        fetchTotal();
         
-        getUserCart(user.username);
-    }, [])
+    }, [userId])
 
-    async function addOrder(){
-        const date = new Date().toLocaleString();
-
-        const finalOrder = {
-            user: user.username,
-            cart: [...cart],
-            total: totalPrice,
-            orderDate: date
-        };
-
-        const serverResponse = await addToOrders(finalOrder);
-        setOrder(true);
-        setResponse(serverResponse.message);
-        cart.map((donut) => sessionStorage.removeItem(donut.name));
-        await new Promise(resolve => setTimeout(resolve, 500));
-        navigate('../Home');
+    const checkoutCart = async() => {
+        
+        try {
+            const response = await addToOrder(userId);
+            console.log(await response.json());
+            
+            navigate('../Home');
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
     }
 
-    function goBack(){
-        navigate('../Home');
-    }
 
     return(
         <div>
             <Header />
-            {orderSubmit ? (<h1>{response}</h1>) : (
-            <div className="d-flex flex-column align-items-center">
-                <h1>Cart</h1>
-                <ul className="list-group list-group-flush">
-                    {cart.map((donut, index) => 
-                    (<li className="list-group-item d-flex justify-content-between align-items-center" key={index}>{donut.name}
-                    <span className="badge bg-primary rounded-pill">{donut.quantity}</span>
-                    </li>)
-                    )}
-                </ul>
-                <h2>Total Amount: ${totalPrice}</h2>
-                {emptyCart ? (
-                <div>
-                    <h2>Cart is empty. Go back to add donuts to your cart</h2>
-                    <button className="btn btn-primary" disabled>Checkout</button>
-                    <button onClick={goBack}className="btn btn-primary">Go back</button>
-                </div>):
-                 (<div>
-                    <button onClick={addOrder} className="btn btn-primary">Checkout</button>
-                    <button onClick={goBack}className="btn btn-primary">Go back</button>
-                 </div>)}
-            </div>)}
+                <div className="d-flex flex-column align-items-center">
+                    <h1>Cart</h1>
+                    {   
+                    cart.length === 0 ? <h1>Cart is empty...</h1> :
+                    <ul className="list-group list-group-flush">
+                        {cart.map((donut) => 
+                            {   
+                                if(donut.quantity !== 0){
+                                    return (<li key={donut.donut_id} className="list-group-item d-flex justify-content-between align-items-center" >{donut.name}
+                                        <span className="badge bg-primary rounded-pill">{donut.quantity}</span>
+                                        </li>)
+                                }
+                                return null;
+                            }
+                        )}
+                    </ul>}
+                    <h2>Total Amount: ${total}</h2>
+                    <div>
+                    <button onClick={() => checkoutCart()} className="btn btn-primary" disabled={cart.length === 0}>Checkout</button>
+                    <button onClick={() => navigate('../Home')} className="btn btn-primary">Go back</button>
+                    </div>
+                </div>
             <Footer />
         </div>
     )
