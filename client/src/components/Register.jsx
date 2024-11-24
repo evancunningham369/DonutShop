@@ -7,29 +7,44 @@ import Footer from './Footer';
 function Register(){
     const navigate = useNavigate();
     const [btnName, setBtnName] = useState("");
-    const [response, setResponse] = useState("");
+    const [serverResponse, setServerResponse] = useState("");
 
-    async function handleSubmit(e){
-        e.preventDefault();
+    useEffect(() => {
+        if(serverResponse) {
+          setServerResponse(serverResponse);
+          const timer = setTimeout(() => {
+            setServerResponse("");
+          }, 5000);
+    
+          return () => clearTimeout(timer);
+        }
+      },[serverResponse]);
 
-        const { username, password } = e.target;
+    async function handleSubmit(event){
+        
+        event.preventDefault();
+
+        const { username, password } = event.target;
         const userInfo = {
             username: username.value,
             password: password.value
         };
 
-        const serverResponse = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
+        const response = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
+        const data = await response.json();
         
-        if(serverResponse.success){
-            sessionStorage.setItem('user', JSON.stringify(serverResponse.user));
+        if(response.ok){
+            sessionStorage.setItem('username', JSON.stringify(data.username));
+            sessionStorage.setItem('userId', JSON.stringify(data.userId));
             navigate('../Home');
         }
-        setResponse(serverResponse.message);
-
+        else{
+            setServerResponse(data.message);
+        }
     }
 
-    function handleBtnClick(e){
-        setBtnName(e.target.name);
+    function handleBtnClick(event){
+        setBtnName(event.target.name);
     }
     
     return (
@@ -38,7 +53,6 @@ function Register(){
             <div className='form-container'>
                 <form className='text-center form-signin' onSubmit={handleSubmit}>
                     <h1 className='text-center h3 mb-3 fw-normal'>Register</h1>
-                    <h2 id='response'>{response}</h2>
                     <div className='form-floating'>
                         <input className='form-control' defaultValue="user1" type='username' name="username" id='floatingUsername' placeholder="username"/>
                         <label htmlFor='floatingUsername'>Username </label>
@@ -52,6 +66,7 @@ function Register(){
                         <button className='btn btn-primary m-1' onClick={handleBtnClick} name="login" type="submit">Log-In</button>
                     </div>
                 </form>
+                <h2 id='error-response'>{serverResponse}</h2>
             </div>
             <Footer />
         </Fragment>
