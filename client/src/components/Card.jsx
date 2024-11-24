@@ -1,37 +1,15 @@
-import { useEffect, useState, useRef } from "react";
-import { addToUserCart } from "../fetch_req";
+import { useState } from "react";
+import { addToCart } from "../fetch_req";
 
 export function Card(props){
-    var donutQuantity = parseInt(props.quantity);
-    donutQuantity = isNaN(donutQuantity) ? 0: donutQuantity
-    const first = useRef(true);
-
-    const [response, setResponse] = useState("");
-    const [quantity, setQuantity] = useState(donutQuantity);
-
-    useEffect(() => {
-        if(first.current){
-            first.current = false;
-            return;
-        }
-        props.addToCart({
-            name: props.name,
-            price: props.price,
-            quantity: quantity,
-            total: props.price * quantity,
-        });
-    }, [quantity])
-
-    function increaseQuantity(){
-        setQuantity(quantity + 1);
-    }
-
-    function decreaseQuantity(){
-        if(quantity < 1){
-            setQuantity(0);
-        }
-        else{
-            setQuantity(quantity - 1);
+    const [quantity, setQuantity] = useState(props.quantity);
+    
+    const updateQuantity = async(amount) => {
+        try {
+            setQuantity(amount);
+            await addToCart({userId: props.userId, donutId: props.donutId, quantity: amount});
+        } catch (error) {
+            console.error(error.message);
         }
     }
 
@@ -41,12 +19,12 @@ export function Card(props){
                 <img className="card-img-top" src={props.image} alt={props.name + " Donut image"} />
                 <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{props.name + " Donut"}</h5>
-                    <p className="card-text">{props.desc}</p>
+                    <p className="card-text">description</p>
                     <div className="row mt-auto">
-                        <button onClick={decreaseQuantity} className="btn btn-primary btn-circle col-md-4">-</button>
-                        <h3 style={{display: "inline-block"}} className="col-md-4">Price: ${props.price}</h3>
-                        <button onClick={increaseQuantity} className="btn btn-primary btn-circle col-md-4">+</button>
+                        <button onClick={() => updateQuantity(quantity - 1)} className="btn btn-primary btn-circle col-md-4" disabled={quantity === 0}>-</button>
+                        <button onClick={() => updateQuantity(quantity + 1)} className="btn btn-primary btn-circle col-md-4">+</button>
                     </div>
+                        <h3>Price: ${props.price}</h3>
                     <h2>Qty: {quantity}</h2>
                 </div>
             </div>
