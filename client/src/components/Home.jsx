@@ -10,7 +10,7 @@ function Home(){
     const userId = JSON.parse(sessionStorage.getItem('userId'));
     const [donuts, setDonuts] = useState([]);
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const fetchDonuts = async() => {
             try {
@@ -43,20 +43,20 @@ function Home(){
     return(
         <div>
             <Header />
-                <div className="d-flex flex-column">
-                        <h2>Logged in as {username}</h2>
-                    <div className="card-group mt-2">
-                        {
+            <div className="container">
+                <h2>Logged in as {username}</h2>
+                <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+                    {
                             donuts.map(donut =>
-                                <Card key={donut.donut_id} userId={userId} donutId={donut.donut_id} name={donut.name} price={donut.price} quantity={donut.quantity}/>
+                                <Card userId={userId} donutId={donut.donut_id} name={donut.name} price={donut.price} quantity={donut.quantity}/>
                             )
-                        }
-                    </div>
-                    <div>
-                        <button onClick={checkOut} className="btn btn-primary">Go To Cart</button>
-                        <button onClick={handleLogout} className="btn btn-primary">Log-Out</button>
-                    </div>
+                    }
                 </div>
+                <div>
+                    <button onClick={checkOut} className="btn btn-primary">Go To Cart</button>
+                    <button onClick={handleLogout} className="btn btn-primary">Log-Out</button>
+                </div>
+            </div>
             <Footer />
         </div>
     );
