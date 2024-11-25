@@ -1,3 +1,6 @@
+/*
+GLOBAL STYLES
+*/
 html,
 body,
 #root,
@@ -8,35 +11,7 @@ main {
   position: relative;
   background-color: rgb(75, 75, 75);
 }
-#response{
-  display: inline;
-}
-.form-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 85%;
-}
 
-.form-signin {
-  min-width: 330px;
-}
-
-.btn-circle {
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 12px;
-  line-height: 1.428571429;
-  border-radius: 15px;
-}
-
-ul{
-  width: 30%;
-  padding: 2em;
-}
 header {
   background-color: darkcyan;
   text-align: center;
@@ -63,6 +38,24 @@ footer p {
   color: #ccc;
 }
 
+/*
+REGISTER PAGE STYLES
+*/
+#response{
+  display: inline;
+}
+.form-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 85%;
+}
+
+.form-signin {
+  min-width: 330px;
+}
+
 .form-signin .form-floating:focus-within {
   z-index: 2;
 }
@@ -79,7 +72,43 @@ footer p {
   border-top-right-radius: 0;
 }
 
+/*
+  HOME PAGE STYLES
+*/
+.card{
+  height: 300px;
+}
+
+.card-image{
+  height: 100px;
+  object-fit: contain;
+}
+
+.quantity-buttons{
+  display: flex;
+  padding: .5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-circle {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 10rem;
+}
+
+ul{
+  width: 30%;
+  padding: 2em;
+}
+
+/*
+CHECKOUT PAGE STYLES
+*/
 .list-group{
-  --bs-list-group-item-padding-x: 1rem;
-  --bs-list-group-item-padding-y: 1.5rem;
+  min-width: 250px;
 }
