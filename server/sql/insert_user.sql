@@ -1,0 +1,1 @@
+SELECT insert_user($1, $2);
