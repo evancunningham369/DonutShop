@@ -29,17 +29,17 @@ function Register(){
             username: username.value,
             password: password.value
         };
+        try{
 
-        const response = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
-        const data = await response.json();
-        
-        if(response.ok){
-            sessionStorage.setItem('username', JSON.stringify(data.username));
-            sessionStorage.setItem('userId', JSON.stringify(data.userId));
+            const response = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
+
+            sessionStorage.setItem('username', JSON.stringify(response.username));
+            sessionStorage.setItem('userId', JSON.stringify(response.userId));
             navigate('../Home');
         }
-        else{
-            setServerResponse(data.message);
+        catch(err){
+            console.error(err);
+            setServerResponse(err.message);
         }
     }
 
