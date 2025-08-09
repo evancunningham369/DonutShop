@@ -1,55 +1,37 @@
-export function registerUser(userData){
-    return fetchPost(userData, 'register');
+const BASE_URL = 'http://localhost:3001';
+
+// === AUTH ===
+export const registerUser = (userData) => api.post('/auth/register', userData);
+export const loginUser = (userData) => api.post('/auth/login', userData);
+export const logout = () => api.post('/auth/logout');
+
+// === Donuts & Carts ===
+export const getAllDonuts = (userId) => api.get(`/donuts/${userId}`);
+export const getCart = (userId) => api.get(`/cart/${userId}`);
+export const getCartTotal = (userId) => api.get(`/cart/total/${userId}`);
+
+export const addToCart = ({userId, donutId, quantity}) =>
+    api.post('/cart/add-to-cart', { userId, donutId, quantity});
+
+export const addToOrder = ({userId, total}) => 
+    api.post('/order/add-to-order', {userId, total});
+
+
+async function request(path, options = {}){
+    const response = await fetch(`${BASE_URL}${path}`, options);
+    if(!response.ok){
+        const message = await response.text();
+        throw new Error(`Request failed: ${response.status} ${message}`);
+    }
+    return response.json();
 }
 
-export function loginUser(userData){
-    return fetchPost(userData, 'login');
-}
-
-export async function logout(username){
-    return fetchPost({username:username}, 'logout');
-}
-
-export const getAllDonuts = async(userId) => {
-    const response = await fetch(`http://localhost:3001/donuts/${userId}`);
-    
-    return response;
-}
-
-export const getCart = async(userId) => {
-    const response = await fetch(`http://localhost:3001/cart/${userId}`);
-
-    return response;
-}
-
-export const getCartTotal = async(userId) => {
-    const response = await fetch(`http://localhost:3001/cart/total/${userId}`);
-
-    return response;
-}
-
-export function addToCart(data){
-    return fetchPost(data, 'add-to-cart');
-}
-export const addToOrder = async(userId) =>{
-    const response = await fetch(`http://localhost:3001/add-to-order/${userId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    return response;
-}
-
-
-export async function fetchPost(data, endpoint){
-    const response = await fetch(`http://localhost:3001/${endpoint}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-    
-    return response;
-}
+export const api = {
+    get: (path) => request(path),
+    post: (path, data = {}) =>
+        request(path, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        }),
+};
