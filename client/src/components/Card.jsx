@@ -6,8 +6,8 @@ export function Card(props){
     
     const updateQuantity = async(amount) => {
         try {
-            setQuantity(amount);
             await addToCart({userId: props.userId, donutId: props.donutId, quantity: amount});
+            setQuantity(amount);
         } catch (error) {
             console.error(error.message);
         }
