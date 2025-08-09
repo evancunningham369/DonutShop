@@ -15,17 +15,17 @@ export default function Checkout(){
             try {
                 const response = await getCart(userId);
                                 
-                setCart(await response.json());
+                setCart(await response);
             } catch (error) {
                 console.error("Error:", error);
             }
         }
         const fetchTotal = async() => {
             try {
+
                 const response = await getCartTotal(userId);
-                const data = await response.json();
+                setTotal(response.total_price);
                 
-                setTotal(data.get_cart_total);
             } catch (error) {
                 console.error('Error:',error);
             }
@@ -40,7 +40,7 @@ export default function Checkout(){
         
         try {
             const response = await addToOrder(userId);
-            console.log(await response.json());
+            console.log(await response);
             
             navigate('../Home');
         } catch (error) {
