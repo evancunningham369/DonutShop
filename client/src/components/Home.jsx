@@ -12,12 +12,11 @@ function Home(){
     const navigate = useNavigate();
     
     useEffect(() => {
+        
+
         const fetchDonuts = async() => {
             try {
-                const response = await getAllDonuts(userId);
-                
-                const data = await response.json();
-                
+                const data = await getAllDonuts(userId);
                 setDonuts(data);
             } catch (error) {
                 console.error("Error:", error);
@@ -32,12 +31,9 @@ function Home(){
     }
 
     async function handleLogout(){
-        const response = await logout(username);
-        
+        await logout();
         sessionStorage.clear();
-        if(response.ok){
-            navigate('/');
-        }
+        navigate('/');
     }
     
     return(
@@ -48,7 +44,7 @@ function Home(){
                 <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
                     {
                             donuts.map(donut =>
-                                <Card userId={userId} donutId={donut.donut_id} name={donut.name} price={donut.price} quantity={donut.quantity}/>
+                                <Card key={donut.donut_id} userId={userId} donutId={donut.donut_id} name={donut.name} price={donut.price} quantity={donut.quantity}/>
                             )
                     }
                 </div>
