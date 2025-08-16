@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { getCart, getCartTotal, addToOrder } from '../fetch_req';
 import Header from "./Header";
 import Footer from "./Footer";
+import { useUser } from "../context/UserContext";
 
-export default function Checkout(user){
+export default function Checkout(){
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
     const navigate = useNavigate();
-    
+    const { user } = useUser();
+
     useEffect(() => {
         const fetchCart = async() => {
             try {
