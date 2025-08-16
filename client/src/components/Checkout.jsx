@@ -4,16 +4,15 @@ import { getCart, getCartTotal, addToOrder } from '../fetch_req';
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default function Checkout(){
+export default function Checkout(user){
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
-    const userId = JSON.parse(sessionStorage.getItem('userId'));
     const navigate = useNavigate();
     
     useEffect(() => {
         const fetchCart = async() => {
             try {
-                const response = await getCart(userId);
+                const response = await getCart(user.userId);
                                 
                 setCart(await response);
             } catch (error) {
@@ -23,7 +22,7 @@ export default function Checkout(){
         const fetchTotal = async() => {
             try {
 
-                const response = await getCartTotal(userId);
+                const response = await getCartTotal(user.userId);
                 setTotal(response.total_price);
                 
             } catch (error) {
@@ -34,12 +33,12 @@ export default function Checkout(){
         fetchCart();
         fetchTotal();
         
-    }, [userId])
+    }, [user.userId])
 
     const checkoutCart = async() => {
         
         try {
-            const response = await addToOrder(userId);
+            const response = await addToOrder(user.userId);
             console.log(await response);
             
             navigate('../Home');
