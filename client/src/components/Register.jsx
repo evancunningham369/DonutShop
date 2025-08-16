@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser, loginUser } from '../fetch_req';
 import Header from './Header';
 import Footer from './Footer';
+import { useUser } from '../context/UserContext';
 
 function Register(){
-    const navigate = useNavigate();
     const [btnName, setBtnName] = useState("");
     const [serverResponse, setServerResponse] = useState("");
+    const { setUser } = useUser();
 
     useEffect(() => {
         if(serverResponse) {
@@ -30,12 +31,8 @@ function Register(){
             password: password.value
         };
         try{
-
-            const response = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
-
-            sessionStorage.setItem('username', JSON.stringify(response.username));
-            sessionStorage.setItem('userId', JSON.stringify(response.userId));
-            navigate('../Home');
+            const user = btnName === "register" ? await registerUser(userInfo) : await loginUser(userInfo);
+            setUser(user);
         }
         catch(err){
             console.error(err);
