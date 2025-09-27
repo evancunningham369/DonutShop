@@ -8,8 +8,8 @@ const { Pool } = pg;
 const { DATABASE_URL } = process.env;
 const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
 
-const createAllTablesSQL = fs.readFileSync('./sql/create_all_tables.sql').toString();
-const initDonutsSQL = fs.readFileSync('./sql/init_donuts.sql').toString();
+const createAllTablesSQL = fs.readFileSync('./sql/procedures/proc_create_all_tables.sql').toString();
+const initDonutsSQL = fs.readFileSync('./sql/procedures/proc_init_donuts.sql').toString();
 
 const pool = DATABASE_URL
     ? new Pool({
