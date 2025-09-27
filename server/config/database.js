@@ -38,7 +38,7 @@ export async function bootstrapDatabase() {
         console.error('Error creating tables:', error);
     }
     try {
-        await pool.query('CALL insert_donuts();');
+        await pool.query('CALL init_donuts();');
     } catch (error) {
         console.error('Error initializing donuts:', error);
     }
