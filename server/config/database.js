@@ -31,7 +31,7 @@ pool.on('connect', (client) => {
 
 // Optional, one-time bootstrap guarded by env flag. Avoids running on every boot.
 export async function bootstrapDatabase() {
-    if (process.env.DB_BOOTSTRAP !== 'true') return;
+    //if (process.env.DB_BOOTSTRAP !== 'true') return;
     try {
         await pool.query('CALL create_all_tables();');
     } catch (error) {
