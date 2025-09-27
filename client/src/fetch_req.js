@@ -1,5 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_BASE || 'http://localhost:3001';
-console.log(import.meta.env.VITE_API_BASE);
+
 // === AUTH ===
 export const registerUser = (userData) => api.post('/auth/register', userData);
 export const loginUser = (userData) => api.post('/auth/login', userData);
