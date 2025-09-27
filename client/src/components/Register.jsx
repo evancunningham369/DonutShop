@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser, loginUser } from '../fetch_req';
 import Header from './Header';
 import Footer from './Footer';
-import { useUser } from '../context/UserContext';
+import { useUser } from '../context/UserContext.jsx';
 
 function Register(){
     const [btnName, setBtnName] = useState("");

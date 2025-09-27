@@ -3,7 +3,7 @@ import Register from './Register';
 import Home from './Home';
 import Users from './Users';
 import Checkout from './Checkout';
-import { useUser } from '../context/UserContext.js';
+import { useUser } from '../context/UserContext.jsx';
 
 export default function App() {
   const { user } = useUser();

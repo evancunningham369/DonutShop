@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout, getAllDonuts } from "../fetch_req";
 import { Card } from "./Card";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../context/UserContext.jsx";
 
 function Home(){
     const [donuts, setDonuts] = useState([]);

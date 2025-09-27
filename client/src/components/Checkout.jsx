@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getCart, getCartTotal, addToOrder } from '../fetch_req';
 import Header from "./Header";
 import Footer from "./Footer";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../context/UserContext.jsx";
 
 export default function Checkout(){
     const [cart, setCart] = useState([]);
