@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import pool from './config/database.js';
+import pool, { bootstrapDatabase } from './config/database.js';
 
 import session from 'express-session';
 import pgSimple from 'connect-pg-simple';
@@ -59,6 +59,12 @@ app.use('/auth', authRoutes);
 app.use('/cart', cartRoutes);
 app.use('/order', orderRoutes);
 
-app.listen(PORT, () =>{
-    console.log(`Server running on port ${PORT}`);
-});
+// Health check
+app.get('/health', (_req, res) => res.json({ ok: true }));
+
+(async () => {
+    await bootstrapDatabase();
+    app.listen(PORT, () =>{
+            console.log(`Server running on port ${PORT}`);
+    });
+})();
