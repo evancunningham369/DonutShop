@@ -1,0 +1,14 @@
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist"
+
+# Optional: set environment variables for the build here or via Netlify UI
+# [build.environment]
+#   VITE_API_BASE = "https://courageous-hotteok-c4109d.netlify.app"
+
+# Redirect all routes to index.html for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

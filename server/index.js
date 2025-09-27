@@ -13,15 +13,23 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const ORIGIN = 'http://localhost:3000';
+// Support multiple allowed origins via env (comma-separated)
+const ORIGINS = (process.env.ORIGINS || 'http://localhost:3000')
+    .split(',')
+    .map(o => o.trim());
 
 app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-    origin: ORIGIN,
-    credentials: true,
+        origin: ORIGINS,
+        credentials: true,
 }));
+
+// Trust proxy when running behind Netlify/hosted proxies for correct secure cookies
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
 
 // Postgres store ----
 const PgSession = pgSimple(session);
@@ -40,7 +48,7 @@ app.use(
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         },
     })
