@@ -8,6 +8,9 @@ const { Pool } = pg;
 const { DATABASE_URL } = process.env;
 const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
 
+const createAllTablesSQL = fs.readFileSync('./sql/create_all_tables.sql').toString();
+const initDonutsSQL = fs.readFileSync('./sql/init_donuts.sql').toString();
+
 const pool = DATABASE_URL
     ? new Pool({
             connectionString: DATABASE_URL,
@@ -33,12 +36,12 @@ pool.on('connect', (client) => {
 export async function bootstrapDatabase() {
     //if (process.env.DB_BOOTSTRAP !== 'true') return;
     try {
-        await pool.query('CALL create_all_tables();');
+        await pool.query(createAllTablesSQL);
     } catch (error) {
         console.error('Error creating tables:', error);
     }
     try {
-        await pool.query('CALL init_donuts();');
+        await pool.query(initDonutsSQL);
     } catch (error) {
         console.error('Error initializing donuts:', error);
     }
