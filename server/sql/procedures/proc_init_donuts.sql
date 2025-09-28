@@ -8,6 +8,7 @@ BEGIN
 		('Glazed', 1.00),
 		('Cake', 2.00),
 		('Plain', .50),
-		('Chocolate Sprinkles', 1.50);
+		('Chocolate Sprinkles', 1.50)
+	ON CONFLICT (name) DO NOTHING;
 END;
 $$;
