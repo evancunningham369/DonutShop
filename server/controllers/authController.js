@@ -32,9 +32,11 @@ export async function registerUser(req, res){
     const { username, password } = req.body;
     if(!username || !password) return res.status(400).json({ message: 'username and password are required' });
     
-    const existing = await findUserByUsername(username).rows[0] || null;
-    console.log(existing);
-    if (existing) return res.status(409).json({ message: 'Username already taken' });
+    const result = await findUserByUsername(username);
+    const existing2 = {rows:[]};
+    const existing = result?.rows[0];
+    
+    if (existing?.rows[0]) return res.status(409).json({ message: 'Username already taken' });
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
     const userId = await createUser({ username, hashedPassword: hash });
