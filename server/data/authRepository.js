@@ -9,5 +9,5 @@ export async function createUser(username, hashedPassword){
 }
 
 export async function findUserByUsername(username){
-    return pool.query(selectUserByUsernameSQL, [username]).rows[0] || null;
+    return pool.query(selectUserByUsernameSQL, [username]);
 }
