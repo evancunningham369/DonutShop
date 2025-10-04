@@ -35,7 +35,7 @@ export async function registerUser(req, res){
     const result = await findUserByUsername(username);
     
     const existing = result?.rows[0] ?? null;
-    console.log(existing);
+
     if (existing) return res.status(409).json({ message: 'Username already taken' });
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
