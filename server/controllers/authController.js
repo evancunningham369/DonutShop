@@ -38,8 +38,8 @@ export async function registerUser(req, res){
 
     if (existing) return res.status(409).json({ message: 'Username already taken' });
 
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const userId = await createUser({ username, hashedPassword: hash });
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const userId = await createUser( username, hashedPassword );
 
     // create session
     req.session.user = { userId, username };
