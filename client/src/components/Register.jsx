@@ -35,7 +35,6 @@ function Register(){
             setUser(user);
         }
         catch(err){
-            console.error(err);
             setServerResponse(err.message);
         }
     }

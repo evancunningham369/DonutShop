@@ -33,9 +33,10 @@ async function request(path, options = {}){
         ...options,
         headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     });
-    if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+    let data = await res.json();
+    if (!res.ok) throw new Error(await data.message);
     const ct = res.headers.get('content-type') || '';
-    return ct.includes('application/json') ? res.json() : null;
+    return ct.includes('application/json') ? data : null;
 }
 
 export const api = {
